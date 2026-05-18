@@ -14,7 +14,21 @@ part 'app_database.g.dart';
 
 @DriftDatabase(tables: [Hosts, Groups, Tags, HostTags, AuthMethods])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  AppDatabase(super.e);
+
+  // =========================
+  // Production DB (file system)
+  // =========================
+  factory AppDatabase.file({String name = 'shellwayz.sqlite'}) {
+    return AppDatabase(_openConnection(name));
+  }
+
+  // =========================
+  // Test / Memory DB
+  // =========================
+  factory AppDatabase.memory() {
+    return AppDatabase(NativeDatabase.memory());
+  }
 
   @override
   int get schemaVersion => 1;
@@ -27,11 +41,11 @@ MigrationStrategy get migration => MigrationStrategy(
   },
 );
 
-LazyDatabase _openConnection() {
+LazyDatabase _openConnection(String name) {
   return LazyDatabase(() async {
     final dir = await getApplicationSupportDirectory();
 
-    final file = File(p.join(dir.path, 'shellwayz.sqlite'));
+    final file = File(p.join(dir.path, name));
 
     return NativeDatabase(file);
   });
