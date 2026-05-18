@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:shellwayz_app/core/di/injector.dart';
 
-void main(List<String> args) {
+void main(List<String> args) async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Inject dependencies
+  await setupDI();
+
   runApp(App());
 }
 
